@@ -949,7 +949,7 @@ class CI_Loader {
 		 *
 		 * We buffer the output for two reasons:
 		 * 1. Speed. You get a significant speed boost.
-		 * 2. So that the final rendered template can be post-processed by
+		 * 2. So that the final rendered layouts can be post-processed by
 		 *	the output class. Why do we need post processing? For one thing,
 		 *	in order to show the elapsed page load time. Unless we can
 		 *	intercept the content right before it's sent to the browser and
@@ -986,7 +986,7 @@ class CI_Loader {
 		 * other views, we need to flush the content back out whenever
 		 * we are beyond the first level of output buffering so that
 		 * it can be seen and included properly by the first included
-		 * template and any subsequent ones. Oy!
+		 * layouts and any subsequent ones. Oy!
 		 */
 		if (ob_get_level() > $this->_ci_ob_level + 1)
 		{

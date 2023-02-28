@@ -80,7 +80,7 @@ class CI_Table {
 	public $caption		= NULL;
 
 	/**
-	 * Table layout template
+	 * Table layout layouts
 	 *
 	 * @var array
 	 */
@@ -108,7 +108,7 @@ class CI_Table {
 	public $function	= NULL;
 
 	/**
-	 * Set the template from the table config file if it exists
+	 * Set the layouts from the table config file if it exists
 	 *
 	 * @param	array	$config	(default: array())
 	 * @return	void
@@ -127,7 +127,7 @@ class CI_Table {
 	// --------------------------------------------------------------------
 
 	/**
-	 * Set the template
+	 * Set the layouts
 	 *
 	 * @param	array	$template
 	 * @return	bool
@@ -311,7 +311,7 @@ class CI_Table {
 			return 'Undefined table data';
 		}
 
-		// Compile and validate the template date
+		// Compile and validate the layouts date
 		$this->_compile_template();
 
 		// Validate a possibly existing custom cell manipulation function
