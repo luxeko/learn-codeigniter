@@ -6,4 +6,5 @@ $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
 
 // login
-$route['login']['GET'] = 'LoginController';
+$route['login']['GET'] = 'LoginController/index';
+$route['login-user']['POST'] = 'LoginController/login';
