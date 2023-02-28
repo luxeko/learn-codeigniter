@@ -311,9 +311,9 @@ class CI_Unit_test {
 	// --------------------------------------------------------------------
 
 	/**
-	 * Set the template
+	 * Set the layouts
 	 *
-	 * This lets us set the template to be used to display results
+	 * This lets us set the layouts to be used to display results
 	 *
 	 * @param	string
 	 * @return	void
@@ -361,7 +361,7 @@ class CI_Unit_test {
 	/**
 	 * Parse Template
 	 *
-	 * Harvests the data within the template {pseudo-variables}
+	 * Harvests the data within the layouts {pseudo-variables}
 	 *
 	 * @return	void
 	 */
