@@ -19,6 +19,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 |	['username'] The username used to connect to the database
 |	['password'] The password used to connect to the database
 |	['database'] The name of the database you want to connect to
+|   ['port'] The port of database you want to connect to
 |	['dbdriver'] The database driver. e.g.: mysqli.
 |			Currently supported:
 |				 cubrid, ibase, mssql, mysql, mysqli, oci8,
@@ -77,7 +78,7 @@ $db['default'] = array(
 	'dsn'	=> '',
 	'hostname' => 'localhost',
 	'username' => 'root',
-	'password' => '123456',
+	'password' => '',
 	'port' => '3308',
 	'database' => 'codeigniter',
 	'dbdriver' => 'mysqli',
