@@ -5,6 +5,6 @@ class Welcome extends CI_Controller {
 	public function index()
 	{
 		$this->load->model('IndexModel');
-		$this->load->view('layout');
+		$this->load->view('home');
 	}
 }
