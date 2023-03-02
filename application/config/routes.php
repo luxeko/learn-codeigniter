@@ -15,3 +15,7 @@ $route['cms/dashboard']['GET'] = 'DashboardController/index';
 
 // category
 $route['cms/categories']['GET'] = 'CategoryController/index';
+$route['cms/categories/add']['GET'] = 'CategoryController/add';
+$route['cms/categories/read']['GET'] = 'CategoryController/index';
+$route['cms/categories/update']['PUT'] = 'CategoryController/index';
+$route['cms/categories/delete']['DELETE'] = 'CategoryController/index';
