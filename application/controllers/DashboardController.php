@@ -9,9 +9,7 @@ class DashboardController extends CI_Controller
     // public function checkLogin()
     // {
     //     $user = $this->session->userdata('LoginIn');
-    //     if ($user) {
-    //         redirect(base_url('/dashboard'));
-    //     } else {
+    //     if (!$user) {
     //         redirect(base_url('/login'));
     //     }
     // }
