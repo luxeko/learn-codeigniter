@@ -15,6 +15,7 @@ class LoginController extends CI_Controller
 
     public function login()
     {
+
         $this->form_validation->set_rules('email', 'Email', 'trim|required', ['required' => 'Vui long nhap %s']);
         $this->form_validation->set_rules('password', 'Password', 'trim|required', ['required' => 'Vui long nhap %s']);
         if ($this->form_validation->run()) {
