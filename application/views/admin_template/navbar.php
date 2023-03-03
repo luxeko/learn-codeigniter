@@ -29,6 +29,9 @@
                 <li class="nav-item">
                     <a class="nav-link" href="<?php echo base_url('/cms/categories') ?>">Danh mục</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="<?php echo base_url('/cms/products') ?>">Sản phẩm</a>
+                </li>
             </ul>
         </div>
     </div>
