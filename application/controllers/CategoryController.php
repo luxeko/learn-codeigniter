@@ -32,6 +32,7 @@ class CategoryController extends CI_Controller
 		$this->load->view('category/index', $data);
 		$this->load->view('admin_template/footer');
 	}
+
 	public function parentName($parentId)
 	{
 		$parentName = $this->CategoryModel->getParentName($parentId);
@@ -41,12 +42,22 @@ class CategoryController extends CI_Controller
 			return $parentName[0]->categoryName;
 		}
 	}
+
+	public function getCategory($parentId)
+	{
+		return $this->CategoryModel->recusive($parentId);
+	}
+
 	public function add()
 	{
 		$this->checkLogin();
+		$htmlOption = $this->getCategory($parentId = 0);
+		$data = array(
+			'htmlOption' => $htmlOption
+		);
 		$this->load->view('admin_template/header');
 		$this->load->view('admin_template/navbar');
-		$this->load->view('category/create');
+		$this->load->view('category/create', $data);
 		$this->load->view('admin_template/footer');
 	}
 
@@ -63,9 +74,13 @@ class CategoryController extends CI_Controller
 				'slug' => $this->input->post('slug'),
 				'description' => $this->input->post('description')
 			];
-			$checkExits = $this->CategoryModel->checkExist($data['categoryName']);
-			if ($checkExits) {
-				$this->session->set_flashdata('exists', 'Tên danh mục đã tồn tại');
+			$checkExitsName = $this->CategoryModel->checkExistName($data['categoryName']);
+			$checkExitsCode = $this->CategoryModel->checkExistCode($data['categoryCode']);
+			if ($checkExitsName) {
+				$this->session->set_flashdata('existsName', 'Tên danh mục đã tồn tại');
+				$this->add();
+			} elseif ($checkExitsCode) {
+				$this->session->set_flashdata('existsCode', 'Mã danh mục đã tồn tại');
 				$this->add();
 			} else {
 				$this->CategoryModel->insert($data);

@@ -2,6 +2,12 @@
 
 class CategoryModel extends CI_Model
 {
+	private $htmlSelect = '';
+	public function __construct()
+	{
+		parent::__construct();
+		$this->load->model('CategoryModel');
+	}
 	public function select()
 	{
 		$query = $this->db->get('categories');
@@ -24,9 +30,14 @@ class CategoryModel extends CI_Model
 		return $query->result();
 	}
 
-	public function checkExist($categoryName)
+	public function checkExistName($categoryName)
 	{
 		$query = $this->db->where('categoryName', $categoryName)->get('categories');
+		return $query->result();
+	}
+	public function checkExistCode($categoryCode)
+	{
+		$query = $this->db->where('categoryCode', $categoryCode)->get('categories');
 		return $query->result();
 	}
 
@@ -47,5 +58,22 @@ class CategoryModel extends CI_Model
 		$this->db->select('categoryName');
 		$query = $this->db->where('id', $parentId)->get('categories');
 		return $query->result();
+	}
+
+	public function recusive($parentId, $id = 0, $text = '')
+	{
+		$data = $this->select();
+		foreach ($data as $value) {
+			if ($value->parentId == $id) {
+				if (!empty($parentId) && $parentId == $value->id && $value->status == 'Active') {
+					$this->htmlSelect.="<option selected value=".$value->id.">" . $text .' '.
+						$value->categoryName."</option>";
+				} elseif ($value->status == 'Active') {
+					$this->htmlSelect.="<option value=".$value->id.">" . $text .' '. $value->categoryName . "</option>";
+				}
+				$this->recusive($parentId, $value->id, $text.'--');
+			}
+ 		}
+		return $this->htmlSelect;
 	}
 }

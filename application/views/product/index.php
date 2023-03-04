@@ -4,20 +4,21 @@
 	<?php } elseif ($this->session->flashdata('success_update')) { ?>
 		<div class="alert alert-success"><?php echo $this->session->flashdata('success_update') ?></div>
 	<?php } elseif ($this->session->flashdata('success_delete')) { ?>
-		<div class="alert alert-danger"><?php echo $this->session->flashdata('success_delete') ?></div>
+		<div class="alert alert-success"><?php echo $this->session->flashdata('success_delete') ?></div>
 	<?php } ?>
 	<div class="mb-3">
 		<a href="<?php echo base_url('/cms/products/add') ?>" class="btn btn-success"><i class="bi
-		bi-plus-lg"></i> Thêm danh mục</a>
+		bi-plus-lg"></i> Thêm sản phẩm</a>
 	</div>
 	<table class="table table-hover table-bordered">
 		<thead class="table-secondary">
 		<tr>
 			<th scope="col">#</th>
-			<th scope="col">Mã danh mục</th>
-			<th scope="col">Tên danh mục</th>
-			<th scope="col">Miêu tả</th>
-			<th scope="col">Danh mục cha</th>
+			<th scope="col">Mã sản phẩm</th>
+			<th scope="col">Ảnh</th>
+			<th scope="col">Giá</th>
+			<th scope="col">Danh mục</th>
+			<th scope="col">Viewer</th>
 			<th scope="col">Trạng thái</th>
 			<th scope="col">Created at</th>
 			<th scope="col">Updated at</th>
@@ -28,10 +29,18 @@
 		<?php foreach ($products as $k => $v) { ?>
 			<tr>
 				<th scope="row"><?php echo $k + 1 ?></th>
-				<td><?php echo $v->productName ?></td>
 				<td><?php echo $v->productCode ?></td>
-				<td><?php echo $v->description ?></td>
-				<td><?php echo $v->parentName ?></td>
+				<td>
+					<div>
+						<img src="<?php echo $v->imageProductPath ?>" alt="<?php echo $v->imageProductName ?>">
+					</div>
+					<div>
+						<?php echo $v->productName ?>
+					</div>
+				</td>
+				<td><?php echo $v->price ?></td>
+				<td><?php echo $v->categoryName ?></td>
+				<td><?php echo $v->viewCount ?></td>
 				<td class="text-success">
 					<?php if ($v->status == 'Active') {
 						echo '<p class="text text-success fw-bold">Active</p>';
@@ -54,7 +63,6 @@
 						btn-danger"><i class="bi bi-trash"></i></a>
 					</div>
 				</td>
-
 			</tr>
 		<?php } ?>
 		</tbody>

@@ -11,8 +11,8 @@
                 <?php if (form_error('categoryName')) {
                     echo '<span class="me-1">*</span>' . form_error('categoryName');
                 } ?>
-                <?php if ($this->session->flashdata('exists')) {
-                    echo $this->session->flashdata('exists');
+                <?php if ($this->session->flashdata('existsName')) {
+                    echo $this->session->flashdata('existsName');
                 } ?>
             </span>
         </div>
@@ -23,15 +23,18 @@
                 <?php if (form_error('categoryCode')) {
                     echo '<span class="me-1">*</span>' . form_error('categoryCode');
                 } ?>
+				<?php if ($this->session->flashdata('existsCode')) {
+					echo $this->session->flashdata('existsCode');
+				} ?>
             </span>
         </div>
         <div class="mb-3">
             <label for="parentId" class="form-label">Danh mục cha</label>
             <select class="form-select" name="parentId" id="parentId">
-                <option selected>Chọn danh mục cha</option>
-                <option value="1">Nam</option>
-                <option value="2">Nữ</option>
-                <option value="3">Trẻ em</option>
+                <option selected value="0">Chọn danh mục cha</option>
+				<?php
+					echo $data.$htmlOption;
+				?>
             </select>
         </div>
         <div class="mb-3">
