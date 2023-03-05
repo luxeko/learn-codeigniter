@@ -63,8 +63,17 @@ class CategoryController extends CI_Controller
 
 	public function create()
 	{
-		$this->form_validation->set_rules('categoryName', 'CategoryName', 'trim|required', ['required' => 'Vui lòng điền tên danh mục']);
-		$this->form_validation->set_rules('categoryCode', 'CategoryCode', 'trim|required', ['required' => 'Vui lòng điền mã danh mục']);
+		$this->form_validation->set_rules('categoryName', 'CategoryName', 'trim|required|is_unique[categories.categoryName]',
+			[
+				'required' => 'Vui lòng nhập tên danh mục',
+				'is_unique' => 'Tên danh mục đã tồn tại'
+			]
+		);
+		$this->form_validation->set_rules('categoryCode', 'CategoryCode', 'trim|required|is_unique[categories.categoryCode]',
+			[
+				'required' => 'Vui lòng nhập mã danh mục',
+				'is_unique' => 'Mã danh mục đã tồn tại'
+			]);
 		if ($this->form_validation->run()) {
 			$data = [
 				'categoryName' => $this->input->post('categoryName'),
@@ -74,19 +83,9 @@ class CategoryController extends CI_Controller
 				'slug' => $this->input->post('slug'),
 				'description' => $this->input->post('description')
 			];
-			$checkExitsName = $this->CategoryModel->checkExistName($data['categoryName']);
-			$checkExitsCode = $this->CategoryModel->checkExistCode($data['categoryCode']);
-			if ($checkExitsName) {
-				$this->session->set_flashdata('existsName', 'Tên danh mục đã tồn tại');
-				$this->add();
-			} elseif ($checkExitsCode) {
-				$this->session->set_flashdata('existsCode', 'Mã danh mục đã tồn tại');
-				$this->add();
-			} else {
-				$this->CategoryModel->insert($data);
-				$this->session->set_flashdata('success_create', 'Thêm mới thành công');
-				redirect(base_url('/cms/categories'));
-			}
+			$this->CategoryModel->insert($data);
+			$this->session->set_flashdata('success_create', 'Thêm mới thành công');
+			redirect(base_url('/cms/categories'));
 		} else {
 			$this->add();
 		}
@@ -119,9 +118,14 @@ class CategoryController extends CI_Controller
 				'updatedAt' => $date
 			];
 			$categoryName = $this->input->post('categoryName');
-			$checkExcept = $this->CategoryModel->checkExcept($id, $categoryName);
-			if ($checkExcept) {
-				$this->session->set_flashdata('exists', 'Tên danh mục đã tồn tại');
+			$categoryCode = $this->input->post('categoryCode');
+			$checkExceptName = $this->CategoryModel->checkExcept($id, 'categoryName', $categoryName);
+			$checkExceptCode = $this->CategoryModel->checkExcept($id, 'categoryCode', $categoryCode);
+			if ($checkExceptName) {
+				$this->session->set_flashdata('exists_name', 'Tên danh mục đã tồn tại');
+				$this->edit($id);
+			} elseif ($checkExceptCode) {
+				$this->session->set_flashdata('exists_code', 'Mã danh mục đã tồn tại');
 				$this->edit($id);
 			} else {
 				$this->CategoryModel->update($id, $data);

@@ -13,8 +13,8 @@ foreach ($category as $v) { ?>
                     <?php if (form_error('categoryName')) {
                         echo '<span class="me-1">*</span>' . form_error('categoryName');
                     } ?>
-                    <?php if ($this->session->flashdata('exists')) {
-                        echo $this->session->flashdata('exists');
+                    <?php if ($this->session->flashdata('exists_name')) {
+                        echo $this->session->flashdata('exists_name');
                     } ?>
                 </span>
             </div>
@@ -26,6 +26,9 @@ foreach ($category as $v) { ?>
                     <?php if (form_error('categoryCode')) {
                         echo '<span class="me-1">*</span>' . form_error('categoryCode');
                     } ?>
+					<?php if ($this->session->flashdata('exists_code')) {
+						echo $this->session->flashdata('exists_code');
+					} ?>
                 </span>
             </div>
             <div class="mb-3">
@@ -72,42 +75,10 @@ foreach ($category as $v) { ?>
     </div>
 <?php } ?>
 
+<script type="text/javascript" src="<?php echo base_url() ?>/application/javascript/slug.js"></script>
 <script>
-    const toSlug = (str) => {
-        // Chuyển hết sang chữ thường
-        str = str.toLowerCase();
-
-        // xóa dấu
-        str = str
-            .normalize('NFD') // chuyển chuỗi sang unicode tổ hợp
-            .replace(/[\u0300-\u036f]/g, ''); // xóa các ký tự dấu sau khi tách tổ hợp
-
-        // Thay ký tự đĐ
-        str = str.replace(/[đĐ]/g, 'd');
-
-        // Xóa ký tự đặc biệt
-        str = str.replace(/([^0-9a-z-\s])/g, '');
-
-        // Xóa khoảng trắng thay bằng ký tự -
-        str = str.replace(/(\s+)/g, '-');
-
-        // Xóa ký tự - liên tiếp
-        str = str.replace(/-+/g, '-');
-
-        // xóa phần dư - ở đầu & cuối
-        str = str.replace(/^-+|-+$/g, '');
-
-        // return
-        return str;
-    }
-
-    const categoryName = document.getElementById('categoryName')
-    const categoryCode = document.getElementById('categoryCode')
-    const slug = document.getElementById('slug')
-    categoryName.addEventListener('change', () => {
-        slug.setAttribute('value', toSlug(categoryName.value) + '-' + categoryCode.value);
-    })
-    categoryCode.addEventListener('change', () => {
-        slug.setAttribute('value', toSlug(categoryName.value) + '-' + categoryCode.value);
-    })
+	const categoryName = document.getElementById('categoryName')
+	const categoryCode = document.getElementById('categoryCode')
+	const slug = document.getElementById('slug')
+	renderSlug(categoryName, categoryCode, slug);
 </script>

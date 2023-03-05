@@ -10,53 +10,53 @@
 		<a href="<?php echo base_url('/cms/products/add') ?>" class="btn btn-success"><i class="bi
 		bi-plus-lg"></i> Thêm sản phẩm</a>
 	</div>
-	<table class="table table-hover table-bordered">
+	<table class="table table-bordered">
 		<thead class="table-secondary">
 		<tr>
 			<th scope="col">#</th>
-			<th scope="col">Mã sản phẩm</th>
-			<th scope="col">Ảnh</th>
+			<th scope="col" class="text-center">Ảnh</th>
 			<th scope="col">Giá</th>
 			<th scope="col">Danh mục</th>
 			<th scope="col">Viewer</th>
 			<th scope="col">Trạng thái</th>
-			<th scope="col">Created at</th>
-			<th scope="col">Updated at</th>
 			<th scope="col">Action</th>
 		</tr>
 		</thead>
 		<tbody>
 		<?php foreach ($products as $k => $v) { ?>
 			<tr>
-				<th scope="row"><?php echo $k + 1 ?></th>
-				<td><?php echo $v->productCode ?></td>
-				<td>
-					<div>
-						<img src="<?php echo $v->imageProductPath ?>" alt="<?php echo $v->imageProductName ?>">
-					</div>
-					<div>
-						<?php echo $v->productName ?>
+				<th scope="row" class="align-middle"><?php echo $k + 1 ?></th>
+				<td class="align-middle">
+					<div class="d-flex align-items-center">
+						<img style="aspect-ratio: 3/4; width: 120px"
+							 src="<?php echo base_url('') . $v->imageProductPath ?>"
+							 alt="<?php echo $v->imageProductName ?>">
+						<div class="d-flex flex-column ms-1">
+							<p>
+								<span class="fw-bold">Tên:</span> <?php echo $v->productName ?>
+							</p>
+							<p>
+								<span class="fw-bold">Mã:</span> <?php echo $v->productCode ?>
+							</p>
+						</div>
 					</div>
 				</td>
-				<td><?php echo $v->price ?></td>
-				<td><?php echo $v->categoryName ?></td>
-				<td><?php echo $v->viewCount ?></td>
-				<td class="text-success">
+				<td class="text text-success fw-bold align-middle">400000 VND</td>
+				<td class="align-middle"><?php echo $v->categoryName ?></td>
+				<td class="align-middle"><?php echo $v->viewCount ?></td>
+				<td class="text-success align-middle">
 					<?php if ($v->status == 'Active') {
-						echo '<p class="text text-success fw-bold">Active</p>';
+						echo '<span class="text text-success fw-bold">Active</span>';
 					} else {
-						echo '<p class="text text-danger fw-bold">Disable</p>';
+						echo '<span class="text text-danger fw-bold">Disable</span>';
 					} ?>
 				</td>
-				<td><?php echo $v->createdAt ?></td>
-				<td><?php echo $v->updatedAt ?></td>
-				<td>
+				<td class="align-middle">
 					<div class="d-flex justify-content-center align-items-center">
+						<a href="<?php echo base_url('/cms/products/preview/' . $v->id . '/' . $v->slug) ?>"
+						   class="btn btn-warning text-white me-2"><i class="bi bi-eye-fill"></i></a>
 						<a href="<?php echo base_url('/cms/products/edit/' . $v->id . '/' . $v->slug) ?>"
-						   class="btn
-						btn-primary
-						me-2"><i class="bi
-						bi-pencil"></i></a>
+						   class="btn btn-primary me-2"><i class="bi bi-pencil"></i></a>
 						<a onclick="return confirm('Bạn có chắc chắn muốn xóa <?php echo $v->productName ?> không?')"
 						   href="<?php
 						   echo base_url('/cms/products/delete/' . $v->id) ?>" class="btn

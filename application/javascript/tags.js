@@ -1,7 +1,17 @@
 $(document).ready(function(){
 	$('.select2_tags').select2({
-		// 'placeholder': 'Chọn thẻ tag',
-		tags: true,
-		tokenSeparators: [',', ' ']
+		createTag: (params) => {
+			let term = $.trim(params.term);
+
+			if (term === '') {
+				return null;
+			}
+
+			return {
+				id: term,
+				text: term,
+				newTag: true // add additional parameters
+			}
+		}
 	})
 });

@@ -27,13 +27,23 @@
 				<div class="mb-3">
 					<label for="slug" class="form-label">Slug</label>
 					<input type="text" name="slug" class="form-control" id="slug">
+					<span class="text-danger text d-flex">
+						<?php if (form_error('slug')) {
+							echo '<span class="me-1">*</span>' . form_error('slug');
+						} ?>
+					</span>
 				</div>
 				<div class="mb-3">
-					<label for="parentId" class="form-label">Danh mục sản phẩm</label>
-					<select class="form-select" name="parentId" id="parentId">
-						<option selected value="0">Chọn danh mục</option>
+					<label for="categoryId" class="form-label">Danh mục sản phẩm</label>
+					<select class="form-select" name="categoryId" id="categoryId">
+						<option selected>Chọn danh mục</option>
 						<?php echo $data . $htmlOption; ?>
 					</select>
+					<span class="text-danger text d-flex">
+						<?php if (form_error('categoryId')) {
+							echo '<span class="me-1">*</span>' . form_error('categoryId');
+						} ?>
+					</span>
 				</div>
 				<div class="mb-3">
 					<label for="description" class="form-label">Miêu tả</label>
@@ -46,7 +56,7 @@
 							multiple="multiple">
 						<?php
 						foreach ($tags as $value) {
-							echo "<option value=" . $value->id . ">" . $text . ' ' . $value->tagName . "</option>";
+							echo "<option value=" . $value->id . ">" . $value->tagName . "</option>";
 						}
 						?>
 					</select>
@@ -69,51 +79,31 @@
 					</select>
 				</div>
 			</div>
-			<div class="col-5 sticky-top" style="height: 500px; top: 50px">
+			<div class="col-5 sticky-top pt-2 pb-4"
+				 style="height: 100%; top: 20px;box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);border-radius: 0.375rem;">
 				<div class="form-group mb-4 d-flex flex-column">
 					<label for="imageProductPath">Chọn ảnh chính (520px : 520px)</label>
 					<input class="form-control-file" type="file" id="imageProductPath" name="imageProductPath">
-					<div class="rounded-lg shadow-sm my-3 ms-0 border-0 border border-light"
-						 style="width:300px; height:300px">
-						<img src=" " style="width:100%; height: 100%" id="previewImage">
+					<?php
+					if ($this->session->flashdata('error_file')) { ?>
+						<small class="text text-danger mt-2 "><?php echo $this->session->flashdata('error_file')
+							?></small>
+					<?php } ?>
+					<div hidden="hidden" class="my-3 ms-0 border-0 border border-light"
+						 style="width:300px; height:300px" id="previewLayout">
+						<img src="" alt="" style="width:100%; height: 100%" id="previewImage">
 					</div>
 				</div>
 				<div class="form-group d-flex flex-column">
 					<label for="thumbnailPath">Chọn các ảnh chi tiết</label>
-					<input class="form-control-file" multiple="multiple" type="file" id="thumbnailPath"
-						   name="thumbnail_path[]">
-					<div class="row">
-						<div class="col-4">
-							<div class="rounded-lg shadow-sm my-3 ms-0 border-0 border border-light col-6" style="width:150px;
-					height:150px">
-								<img src=" " style="width:100%; height: 100%" id="previewThumbnail">
-							</div>
-						</div>
-						<div class="col-4">
-							<div class="rounded-lg shadow-sm my-3 ms-0 border-0 border border-light col-6" style="width:150px;
-					height:150px">
-								<img src=" " style="width:100%; height: 100%" id="previewThumbnail">
-							</div>
-						</div>
-						<div class="col-4">
-							<div class="rounded-lg shadow-sm my-3 ms-0 border-0 border border-light col-6" style="width:150px;
-					height:150px">
-								<img src=" " style="width:100%; height: 100%" id="previewThumbnail">
-							</div>
-						</div>
-						<div class="col-4">
-							<div class="rounded-lg shadow-sm my-3 ms-0 border-0 border border-light col-6" style="width:150px;
-					height:150px">
-								<img src=" " style="width:100%; height: 100%" id="previewThumbnail">
-							</div>
-						</div>
-						<div class="col-4">
-							<div class="rounded-lg shadow-sm my-3 ms-0 border-0 border border-light col-6" style="width:150px;
-					height:150px">
-								<img src=" " style="width:100%; height: 100%" id="previewThumbnail">
-							</div>
-						</div>
-					</div>
+					<input class="form-control-file" multiple="" type="file" id="thumbnailPath"
+						   name="thumbnailPaths[]">
+					<?php
+					if ($this->session->flashdata('error_thumbnail')) { ?>
+						<small class="text text-danger mt-2 "><?php echo $this->session->flashdata('error_thumbnail')
+							?></small>
+					<?php } ?>
+					<div class="row" id="list-thumbnail"></div>
 				</div>
 			</div>
 			<div class="col-7 d-flex justify-content-end">
@@ -125,151 +115,22 @@
 		</div>
 	</form>
 </div>
-<script>
-	const start = () => {
-		renderSlug();
-		renderImageProduct();
-	}
-	const toSlug = (str) => {
-		// Chuyển hết sang chữ thường
-		str = str.toLowerCase();
 
-		// xóa dấu
-		str = str
-			.normalize('NFD') // chuyển chuỗi sang unicode tổ hợp
-			.replace(/[\u0300-\u036f]/g, ''); // xóa các ký tự dấu sau khi tách tổ hợp
-
-		// Thay ký tự đĐ
-		str = str.replace(/[đĐ]/g, 'd');
-
-		// Xóa ký tự đặc biệt
-		str = str.replace(/([^0-9a-z-\s])/g, '');
-
-		// Xóa khoảng trắng thay bằng ký tự -
-		str = str.replace(/(\s+)/g, '-');
-
-		// Xóa ký tự - liên tiếp
-		str = str.replace(/-+/g, '-');
-
-		// xóa phần dư - ở đầu & cuối
-		str = str.replace(/^-+|-+$/g, '');
-
-		// return
-		return str;
-	}
-	const renderSlug = () => {
-		const productName = document.getElementById('productName')
-		const productCode = document.getElementById('productCode')
-		const slug = document.getElementById('slug')
-		productName.addEventListener('change', () => {
-			slug.setAttribute('value', toSlug(productName.value) + '-' + productCode.value);
-		})
-		productCode.addEventListener('change', () => {
-			slug.setAttribute('value', toSlug(productName.value) + '-' + productCode.value);
-		})
-	}
-	const renderImageProduct = () => {
-		const previewImage = document.getElementById('previewImage');
-		const inputImage = document.getElementById('imageProductPath');
-		const reader = new FileReader();
-		inputImage.addEventListener('change', (item) => {
-			reader.onloadend = () => {
-				previewImage.src = reader.result;
-			}
-			if (item.target.files && item.target.files[0]) {
-				reader.readAsDataURL(item.target.files[0]);
-			} else {
-				previewImage.src = ' ';
-			}
-		})
-		previewImage.addEventListener('click', () => {
-			inputImage.click();
-		})
-	}
-	start();
-</script>
-<script>
-	$(document).ready(function () {
-		$(".add-item").click(() => {
-			renderItem();
-		})
-		const renderItem = () => {
-			const listItem = $('#list-items');
-			let item = `
-					<div class="row border-bottom mb-3 item">
-						<div class="col-2">
-							<label for="colorName" class="form-label">Màu sắc (ENG)</label>
-							<input type="text" name="colorName" class="form-control" id="colorName">
-						</div>
-						<div class="col-2">
-							<label for="colorCode" class="form-label">Mã màu (Hex)</label>
-							<input type="color" value="#4068DF" name="colorCode" class="h-50 form-control" id="colorCode">
-						</div>
-						<div class="col-2">
-							<label for="price" class="form-label">Số lượng</label>
-							<input type="text" name="price" class="form-control" id="price">
-						</div>
-						<div class="col-5">
-							<label for="price" class="form-label">Giá tiền (VNĐ)</label>
-							<input type="text" name="price" class="form-control " id="price">
-						</div>
-						<div class="col-1 d-flex align-items-end justify-content-end">
-							<a class="btn btn-danger text-white d-flex align-items-center
-							justify-content-center w-100 p-2
-							rounded removeItem"><i class="bi bi-trash"></i></a>
-						</div>
-						<div class="col-12 mt-3">
-							<div class="mb-2">
-								<span class="me-2">Size: </span>
-								<input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="option1">
-								<label class="form-check-label" for="inlineCheckbox1">Check all</label>
-							</div>
-							<div class="form-check form-check-inline">
-								<input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="option1">
-								<label class="form-check-label" for="inlineCheckbox1">XS</label>
-							</div>
-							<div class="form-check form-check-inline">
-								<input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="option1">
-								<label class="form-check-label" for="inlineCheckbox1">S</label>
-							</div>
-							<div class="form-check form-check-inline">
-								<input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="option1">
-								<label class="form-check-label" for="inlineCheckbox1">M</label>
-							</div>
-							<div class="form-check form-check-inline">
-								<input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="option1">
-								<label class="form-check-label" for="inlineCheckbox1">L</label>
-							</div>
-							<div class="form-check form-check-inline">
-								<input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="option1">
-								<label class="form-check-label" for="inlineCheckbox1">XL</label>
-							</div>
-							<div class="form-check form-check-inline">
-								<input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="option1">
-								<label class="form-check-label" for="inlineCheckbox1">XXL</label>
-							</div>
-						</div>
-						<div class="col-12 d-flex align-items-end justify-content-end">
-							<strong class="item-stt"></strong>
-						</div>
-					</div>`
-
-			listItem.append(item);
-
-			for (let i = 0; i < $('#list-items > div').length; i++) {
-				$('.item .item-stt')[i].innerHTML = `STT: ${i + 1}`;
-			}
-
-			$(document).on('click', '.removeItem', function () {
-				$(this).closest('.item').remove();
-				for (let i = 0; i < $('#list-items > div').length; i++) {
-					$('.item .item-stt')[i].innerHTML = `STT: ${i + 1}`;
-				}
-			});
-		}
-		renderItem();
-	});
-
-</script>
+<script type="text/javascript" src="<?php echo base_url() ?>/application/javascript/slug.js"></script>
+<script type="text/javascript" src="<?php echo base_url() ?>/application/javascript/renderPreviewImage.js"></script>
 <script type="text/javascript" src="<?php echo base_url() ?>/application/javascript/tags.js"></script>
+<script type="text/javascript" src="<?php echo base_url() ?>/application/javascript/Admin/product.js"></script>
+<script>
+	const name = document.getElementById('productName')
+	const code = document.getElementById('productCode')
+	const slug = document.getElementById('slug')
+	const previewImage = document.getElementById('previewImage');
+	const imageProductPath = document.getElementById('imageProductPath');
+	const previewLayout = document.getElementById('previewLayout');
+	const thumbnailPath = document.getElementById('thumbnailPath');
+	const listThumbnail = document.getElementById('list-thumbnail');
+	renderSlug(name, code, slug);
+	renderImageProduct(previewImage, imageProductPath, previewLayout);
+	handleAddThumbnail(thumbnailPath, listThumbnail);
+</script>
 
