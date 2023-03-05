@@ -8,9 +8,7 @@ class LoginController extends CI_Controller
 
     public function index()
     {
-        $this->load->view('layouts/header');
         $this->load->view('login/index');
-        $this->load->view('layouts/footer');
     }
 
     public function login()
@@ -30,7 +28,7 @@ class LoginController extends CI_Controller
                     'email' => $result[0]->email
                 ];
                 $this->session->set_userdata('LoginIn', $session_array);
-                $this->session->set_flashdata('success_login', 'Login Successfully');
+//                $this->session->set_flashdata('success_login', 'Login Successfully');
                 redirect(base_url('/cms/dashboard'));
             } else {
                 $this->session->set_flashdata('error', 'Wrong Email or Password. Please login again');

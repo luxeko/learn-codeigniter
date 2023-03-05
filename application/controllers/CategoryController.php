@@ -32,6 +32,7 @@ class CategoryController extends CI_Controller
 		$this->load->view('category/index', $data);
 		$this->load->view('admin_template/footer');
 	}
+
 	public function parentName($parentId)
 	{
 		$parentName = $this->CategoryModel->getParentName($parentId);
@@ -41,19 +42,38 @@ class CategoryController extends CI_Controller
 			return $parentName[0]->categoryName;
 		}
 	}
+
+	public function getCategory($parentId)
+	{
+		return $this->CategoryModel->recusive($parentId);
+	}
+
 	public function add()
 	{
 		$this->checkLogin();
+		$htmlOption = $this->getCategory($parentId = 0);
+		$data = array(
+			'htmlOption' => $htmlOption
+		);
 		$this->load->view('admin_template/header');
 		$this->load->view('admin_template/navbar');
-		$this->load->view('category/create');
+		$this->load->view('category/create', $data);
 		$this->load->view('admin_template/footer');
 	}
 
 	public function create()
 	{
-		$this->form_validation->set_rules('categoryName', 'CategoryName', 'trim|required', ['required' => 'Vui lòng điền tên danh mục']);
-		$this->form_validation->set_rules('categoryCode', 'CategoryCode', 'trim|required', ['required' => 'Vui lòng điền mã danh mục']);
+		$this->form_validation->set_rules('categoryName', 'CategoryName', 'trim|required|is_unique[categories.categoryName]',
+			[
+				'required' => 'Vui lòng nhập tên danh mục',
+				'is_unique' => 'Tên danh mục đã tồn tại'
+			]
+		);
+		$this->form_validation->set_rules('categoryCode', 'CategoryCode', 'trim|required|is_unique[categories.categoryCode]',
+			[
+				'required' => 'Vui lòng nhập mã danh mục',
+				'is_unique' => 'Mã danh mục đã tồn tại'
+			]);
 		if ($this->form_validation->run()) {
 			$data = [
 				'categoryName' => $this->input->post('categoryName'),
@@ -63,15 +83,9 @@ class CategoryController extends CI_Controller
 				'slug' => $this->input->post('slug'),
 				'description' => $this->input->post('description')
 			];
-			$checkExits = $this->CategoryModel->checkExist($data['categoryName']);
-			if ($checkExits) {
-				$this->session->set_flashdata('exists', 'Tên danh mục đã tồn tại');
-				$this->add();
-			} else {
-				$this->CategoryModel->insert($data);
-				$this->session->set_flashdata('success_create', 'Thêm mới thành công');
-				redirect(base_url('/cms/categories'));
-			}
+			$this->CategoryModel->insert($data);
+			$this->session->set_flashdata('success_create', 'Thêm mới thành công');
+			redirect(base_url('/cms/categories'));
 		} else {
 			$this->add();
 		}
@@ -104,9 +118,14 @@ class CategoryController extends CI_Controller
 				'updatedAt' => $date
 			];
 			$categoryName = $this->input->post('categoryName');
-			$checkExcept = $this->CategoryModel->checkExcept($id, $categoryName);
-			if ($checkExcept) {
-				$this->session->set_flashdata('exists', 'Tên danh mục đã tồn tại');
+			$categoryCode = $this->input->post('categoryCode');
+			$checkExceptName = $this->CategoryModel->checkExcept($id, 'categoryName', $categoryName);
+			$checkExceptCode = $this->CategoryModel->checkExcept($id, 'categoryCode', $categoryCode);
+			if ($checkExceptName) {
+				$this->session->set_flashdata('exists_name', 'Tên danh mục đã tồn tại');
+				$this->edit($id);
+			} elseif ($checkExceptCode) {
+				$this->session->set_flashdata('exists_code', 'Mã danh mục đã tồn tại');
 				$this->edit($id);
 			} else {
 				$this->CategoryModel->update($id, $data);
