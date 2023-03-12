@@ -28,3 +28,4 @@ $route['cms/products/create']['POST'] = 'ProductController/create';
 $route['cms/products/edit/(:any)/(:any)']['GET'] = 'ProductController/edit/$1';
 $route['cms/products/update/(:any)']['POST'] = 'ProductController/update/$1';
 $route['cms/products/delete/(:any)']['GET'] = 'ProductController/delete/$1';
+$route['cms/products/preview/(:any)']['POST'] = 'ProductController/getPreviewDetail/$1';

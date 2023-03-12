@@ -7,6 +7,7 @@ class ProductModel extends CI_Model
 		parent::__construct();
 		$this->load->model('ProductModel');
 	}
+
 	public function select()
 	{
 		$query = $this->db->get('products');
@@ -26,12 +27,29 @@ class ProductModel extends CI_Model
 		return $query->result()[0]->categoryName;
 	}
 
-	public function addThumbnailToProduct($data) {
+	public function addThumbnailToProduct($data)
+	{
 		return $this->db->insert('product_thumbnails', $data);
 	}
 
 	public function addPriceToProduct($data)
 	{
 		return $this->db->insert('product_prices', $data);
+	}
+
+	public function getDetailProduct($productId)
+	{
+		$this->db->select('*');
+		$query = $this->db->where('productId', $productId)->get('product_prices');
+		return $query->result_array();
+	}
+
+	public function getThumbnailProduct($productId)
+	{
+		return $this->db->where('productId', $productId)->get('product_thumbnails')->result_array();
+	}
+	public function getTagProduct($productId)
+	{
+		return $this->db->where('productId', $productId)->get('products_tags')->result_array();
 	}
 }
