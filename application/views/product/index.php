@@ -15,7 +15,8 @@
 		<tr>
 			<th scope="col">#</th>
 			<th scope="col" class="text-center">Ảnh</th>
-			<th scope="col">Giá</th>
+			<th scope="col">Mã sản phẩm</th>
+			<th scope="col">Tên sản phẩm</th>
 			<th scope="col">Danh mục</th>
 			<th scope="col">Viewer</th>
 			<th scope="col">Trạng thái</th>
@@ -26,22 +27,13 @@
 		<?php foreach ($products as $k => $v) { ?>
 			<tr>
 				<th scope="row" class="align-middle"><?php echo $k + 1 ?></th>
-				<td class="align-middle">
-					<div class="d-flex align-items-center">
-						<img style="aspect-ratio: 3/4; width: 120px"
-							 src="<?php echo base_url('') . $v->imageProductPath ?>"
-							 alt="<?php echo $v->imageProductName ?>">
-						<div class="d-flex flex-column ms-1">
-							<p>
-								<span class="fw-bold">Tên:</span> <?php echo $v->productName ?>
-							</p>
-							<p>
-								<span class="fw-bold">Mã:</span> <?php echo $v->productCode ?>
-							</p>
-						</div>
-					</div>
+				<td class="align-middle" style="width: 120px">
+					<img style="aspect-ratio: 3/4; width: 100%"
+						 src="<?php echo base_url('') . $v->imageProductPath ?>"
+						 alt="<?php echo $v->imageProductName ?>">
 				</td>
-				<td class="text text-success fw-bold align-middle">400000 VND</td>
+				<td class="align-middle"><?php echo $v->productCode ?></td>
+				<td class="align-middle"><?php echo $v->productName ?></td>
 				<td class="align-middle"><?php echo $v->categoryName ?></td>
 				<td class="align-middle"><?php echo $v->viewCount ?></td>
 				<td class="text-success align-middle">
@@ -53,7 +45,10 @@
 				</td>
 				<td class="align-middle">
 					<div class="d-flex justify-content-center align-items-center">
-						<a href="<?php echo base_url('/cms/products/preview/' . $v->id . '/' . $v->slug) ?>"
+						<a type="button"
+						   onclick="getPreviewProduct(<?php echo $v->id ?>)"
+						   data-bs-toggle="modal"
+						   data-bs-target="#modalDetailProduct"
 						   class="btn btn-warning text-white me-2"><i class="bi bi-eye-fill"></i></a>
 						<a href="<?php echo base_url('/cms/products/edit/' . $v->id . '/' . $v->slug) ?>"
 						   class="btn btn-primary me-2"><i class="bi bi-pencil"></i></a>
@@ -67,4 +62,44 @@
 		<?php } ?>
 		</tbody>
 	</table>
+	<!-- Modal -->
+	<div class="modal fade" id="modalDetailProduct" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="staticBackdropLabel">Chi tiết sản phẩm</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					...
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+				</div>
+			</div>
+		</div>
+	</div>
 </div>
+<script type="text/javascript" >
+	const groupBy = (objectArray, key) => {
+		return objectArray.reduce((output, currentValue) => {
+			let groupKey = currentValue[key];
+			if (!output[groupKey]) {
+				output[groupKey] = [];
+			}
+			output[groupKey].push(currentValue);
+			return output;
+		}, {});
+	}
+	const getPreviewProduct = (productId) => {
+		$.ajax({
+			url: `/cms/products/preview/${productId}`,
+			method: 'POST',
+			success: (data) => {
+				const listItemInProduct = JSON.parse(data)
+				const result = groupBy(listItemInProduct.productPrice, 'colorName')
+				console.log(listItemInProduct.productThumbnail);
+			}
+		})
+	}
+</script>

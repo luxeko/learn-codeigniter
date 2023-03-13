@@ -189,7 +189,15 @@ class ProductController extends CI_Controller
 					'thumbnailPath' => $path . '/' . $uploadStatus
 				);
 				$this->ProductModel->addThumbnailToProduct($data);
+			} else {
+				// check error
 			}
 		}
+	}
+
+	public function getPreviewDetail($productId) {
+		$data['productPrice'] = $this->ProductModel->getDetailProduct($productId);
+		$data['productThumbnail'] = $this->ProductModel->getThumbnailProduct($productId);
+		echo json_encode($data);
 	}
 }
